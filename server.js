@@ -48,6 +48,32 @@ app.get("/api/exercise/users", (req, res) => {
   });
 });
 
+//post new exercise
+app.post("/api/exercise/add", (req, res) => {
+  let userObj;
+  // get the user object form DB
+  UserModel.findOne({ _id: req.body.userId }, (err, user) => {
+    if (err) res.send(err).end();
+    if (!user) res.send("Bad userId").end();
+    userObj = { userId: user._id, username: user.username };
+  });
+
+  // set date field
+  if (req.body.date == "") {
+    req.body.date = new Date();
+  } else {
+    req.body.date = new Date(req.body.date);
+  }
+  ExcerciseModel.create(req.body)
+    .then(newExercise => {
+      userObj.exercise = newExercise;
+      res.send(userObj);
+    })
+    .catch(err => {
+      res.send(err);
+    });
+});
+
 
 // Not found middleware
 app.use((req, res, next) => {
