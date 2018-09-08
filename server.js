@@ -74,6 +74,67 @@ app.post("/api/exercise/add", (req, res) => {
     });
 });
 
+// get exercise log of any user
+app.get("/api/exercise/log", (req, res) => {
+  let userObj;
+  // get the user object form DB
+  UserModel.findOne({ _id: req.query.userId }, (err, user) => {
+    if (err) res.send(err).end();
+    if (!user) res.send("Bad userId");
+    userObj = { userId: user._id, username: user.username };
+  });
+
+  if (req.query.limit) {
+    if (parseInt(req.query.limit) > 0) {
+      // get user log -- with limit
+      ExcerciseModel.find({ userId: req.query.userId })
+        .limit(parseInt(req.query.limit))
+        .exec()
+        .then(exercises => {
+          userObj.log = exercises;
+          userObj.count = exercises.length;
+          res.send(userObj).end();
+        })
+        .catch(err => {
+          res.send(err).end();
+        });
+    }
+  } else if (req.query.from || req.query.to) {
+    // get user log -- from : to
+    if (!req.query.to) req.query.to = new Date();
+    if (!req.query.from) {
+      ExcerciseModel.find({ date: { $lte: req.query.to } })
+        .exec()
+        .then(exercises => {
+          userObj.log = exercises;
+          userObj.count = exercises.length;
+          res.send(userObj).end();
+        })
+        .catch(err => {
+          res.send(err).end();
+        });
+    } else {
+      ExcerciseModel.find({ date: { $gte: req.query.from, $lte: req.query.to } })
+        .exec()
+        .then(exercises => {
+          userObj.log = exercises;
+          userObj.count = exercises.length;
+          res.send(userObj).end();
+        })
+        .catch(err => {
+          res.send(err).end();
+        });
+    }
+  } else {
+    // get user log -- complete log
+    ExcerciseModel.find({ userId: req.query.userId }, (err, exercises) => {
+      if (err) res.send(err).end();
+      userObj.log = exercises;
+      userObj.count = exercises.length;
+      res.send(userObj);
+    });
+  }
+});
 
 // Not found middleware
 app.use((req, res, next) => {
