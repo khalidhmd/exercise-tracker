@@ -40,6 +40,15 @@ app.post("/api/exercise/new-user", (req, res) => {
     });
 });
 
+// get all users
+app.get("/api/exercise/users", (req, res) => {
+  UserModel.find({}, (err, users) => {
+    if (err) res.send(err);
+    res.send(users);
+  });
+});
+
+
 // Not found middleware
 app.use((req, res, next) => {
   return next({status: 404, message: 'not found'});
