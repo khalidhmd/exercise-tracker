@@ -18,6 +18,25 @@ const UserSchema = new mongoose.Schema({
 });
 const UserModel = mongoose.model("user", UserSchema);
 
+const ExerciseSchema = new mongoose.Schema({
+  userId: {
+    type: String,
+    required: [true, "UserId is required"]
+  },
+  description: {
+    type: String,
+    required: [true, "Description is required"]
+  },
+  duration: {
+    type: Number,
+    required: [true, "Duration is required"]
+  },
+  date: {
+    type: Date
+  }
+});
+const ExcerciseModel = mongoose.model("exercise", ExerciseSchema);
+
 app.use(cors());
 
 app.use(bodyParser.urlencoded({extended: false}));
