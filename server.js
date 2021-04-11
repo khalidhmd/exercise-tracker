@@ -7,7 +7,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 mongoose.connect(
   process.env.MLAB_URI ||
-    "mongodb://user1:mongodb1@ds245532.mlab.com:45532/exercisetracker"
+    "mongodb://khalid:a7HHWpSz5K7qOvT3OQySQI630ck2jahJRmoE3ch5f6GiHqiy3py9rCcR7A7SDfDzifiZeyNhBeww9hstpHDZ6Q==@khalid.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@khalid@"
 );
 
 const UserSchema = new mongoose.Schema({
